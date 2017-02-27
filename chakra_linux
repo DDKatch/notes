@@ -1,0 +1,36 @@
+Postgres trouble:
+
+➜  ~ sudo systemctl status postgresql              
+● postgresql.service - PostgreSQL database server
+   Loaded: loaded (/usr/lib/systemd/system/postgresql.service; enabled; vendor preset: disabl
+   Active: failed (Result: exit-code) since Mon 2017-02-27 15:43:07 +03; 48s ago
+  Process: 9160 ExecStartPre=/usr/bin/postgresql-check-db-dir ${PGROOT}/data (code=exited, st
+
+Feb 27 15:43:07 chakra-pc systemd[1]: Starting PostgreSQL database server...
+Feb 27 15:43:07 chakra-pc systemd[1]: postgresql.service: Control process exited, code=exited
+Feb 27 15:43:07 chakra-pc systemd[1]: Failed to start PostgreSQL database server.
+Feb 27 15:43:07 chakra-pc systemd[1]: postgresql.service: Unit entered failed state.
+Feb 27 15:43:07 chakra-pc systemd[1]: postgresql.service: Failed with result 'exit-code'.))
+
+Decision:
+
+remove line ExecStartPre=/usr/bin/postgresql-check-db-dir ${PGROOT}/data from /usr/lib/systemd/system/postgresql.service
+
+and reload services 
+
+➜  ~ systemctl daemon-reload
+➜  ~ sudo systemctl start postgresql
+➜  ~ sudo systemctl status postgresql
+● postgresql.service - PostgreSQL database server
+   Loaded: loaded (/usr/lib/systemd/system/postgresql.service; enabled; vendor preset: disabl
+   Active: active (running) since Mon 2017-02-27 15:47:21 +03; 4s ago
+  Process: 9583 ExecStart=/usr/bin/pg_ctl -s -D ${PGROOT}/data start -w -t 120 (code=exited, 
+ Main PID: 9585 (postgres)
+    Tasks: 6 (limit: 4915)
+   CGroup: /system.slice/postgresql.service
+           ├─9585 /usr/bin/postgres -D /var/lib/postgres/data
+           ├─9587 postgres: checkpointer process   
+           ├─9588 postgres: writer process   
+           ├─9589 postgres: wal writer process   
+           ├─9590 postgres: autovacuum launcher process   
+           └─9591 postgres: stats collector process   ))
