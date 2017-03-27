@@ -1,0 +1,4 @@
+When you install manjaro, you'll need to change line in pacman.conf (Add user agent)
+Just patch XferCommand like this:
+
+XferCommand = /usr/bin/wget --user-agent="Mozilla/5.0 (X11; Linux x86_64; rv:46.0) Gecko/20100101 Firefox/46.0" --quiet --show-progress --passive-ftp -c -O %o %u
